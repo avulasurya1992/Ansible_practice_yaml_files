@@ -1,0 +1,30 @@
+# Add static webpage to ecomm website running and display dynamic data
+
+---
+  - name: ecomm website static webpage display dynamic data
+    hosts: n3
+    become: yes
+    vars:
+      username: surya
+
+    tasks:
+      - name: copy static html file to node using copy module
+        copy:
+          src: static.html
+          dest: /var/www/html/static.html
+
+
+
+     
+      - name: run dynamic data in static.html file
+        template:
+          src: static.j2
+          dest: /var/www/html/static.html
+        
+
+
+      - name: restart httpd service
+        systemd:
+          name: httpd
+          state: restarted        
+...
