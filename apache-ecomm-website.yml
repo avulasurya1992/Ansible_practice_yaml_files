@@ -1,0 +1,33 @@
+# ecomm website deployment and running on apache server
+
+---
+  - name: ecomm website deployment
+    hosts: n5
+    become: yes
+    tasks:
+      - name: install apache2
+        apt:
+          name: apache2
+          state: present
+
+
+      - name: run apache2 service
+        systemd:
+          name: apache2
+          state: started
+          enabled: true
+
+      - name: delete contents in var/www/html folder
+        shell: rm -rf /var/www/html/*
+      
+      - name: download website from git
+        git:
+          repo: https://github.com/avulasurya1992/ecomm-website.git
+          dest: /var/www/html
+          force: yes
+
+      - name: run apache2 service
+        systemd:
+          name: apache2
+          state: restarted
+...

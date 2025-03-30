@@ -1,0 +1,51 @@
+# ecomm website deployment and running
+
+---
+  - name: ecomm website deployment
+    hosts: n1
+    become: yes
+    tasks:
+      - name: install httpd
+        yum:
+          name: httpd
+          state: present
+
+      - name: install git
+        yum:
+          name: git
+          state: present
+
+      - name: run httpd service
+        systemd:
+          name: httpd
+          state: started
+          enabled: true
+
+      - name: Remove old website files
+        file:
+          path: /var/www/html
+          state: absent
+
+      - name: download website from git
+        git:
+          repo: https://github.com/avulasurya1992/ecomm-website.git
+          dest: /var/www/html
+          force: yes
+
+     
+      - name: copy httpd config file to node
+        copy:
+          src: ./httpd.conf
+          dest: /etc/httpd/conf/httpd.conf
+        
+
+      - name: Ensure selinux Permissive
+        selinux:
+          state: permissive
+          policy: targeted
+
+      - name: restart httpd service
+        systemd:
+          name: httpd
+          state: restarted        
+...

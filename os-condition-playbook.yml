@@ -1,0 +1,26 @@
+#install and run httpd service
+
+---
+
+  - name: installation of httpd and run service
+    hosts: all
+    become: yes
+
+    tasks:
+      - name: create a folder if OS is  RHEL
+        file:
+          path: /home/ec2-user/condition-folder
+          state: directory
+        when: ansible_distribution == "RedHat"
+
+      - name: install maven if OS is Ubuntu
+        package:
+          name: maven
+          state: present
+          update_cache: yes
+        when: ansible_distribution == "Ubuntu"
+      
+
+...
+
+

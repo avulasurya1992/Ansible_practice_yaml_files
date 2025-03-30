@@ -1,0 +1,27 @@
+# devops-tools-install and running
+
+---
+  - name: devops-tools-download and run
+    hosts: n3
+    become: yes
+    tasks:
+      - name: install git
+        yum:
+          name: git
+          state: present
+
+      - name: download website from git
+        git:
+          repo: https://github.com/avulasurya1992/Devops-tools-install-script.git
+          dest: /home/ec2-user/Devops-tools-install-script
+
+      - name: Ensure script is executable
+        file:
+          path: /home/ec2-user/Devops-tools-install-script/install-script.sh
+          mode: '0755'
+
+      - name: run script
+        command: ./install-script.sh
+        args:
+          chdir: /home/ec2-user/Devops-tools-install-script/
+...

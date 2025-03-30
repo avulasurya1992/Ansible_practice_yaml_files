@@ -1,0 +1,20 @@
+# this one play and one task
+
+---
+
+  - name: one play - one task
+    hosts: n2
+    become: yes
+    tasks:
+      - name: install maven
+        yum:
+          name: maven
+          state: present
+
+      - name: uninstall maven
+        yum:
+          name: maven
+          state: absent
+
+...
+

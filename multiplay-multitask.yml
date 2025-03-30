@@ -1,0 +1,23 @@
+# this is multiplay and multitask
+
+---
+
+  - name: first play
+    hosts: web
+    become: yes
+    tasks:
+      - name: uninstall git
+        yum:
+          name: git
+          state: absent
+
+  - name: second play
+    hosts: db
+    become: yes
+    tasks:
+      - name: install maven
+        yum:
+          name: maven
+          state: present
+
+...

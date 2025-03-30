@@ -1,0 +1,10 @@
+- name: Copy a file from a node to Ansible master
+  hosts: n2  # Change this to your target host/group
+  become: yes
+  tasks:
+    - name: Fetch file from remote node
+      ansible.builtin.fetch:
+        src: /etc/httpd/conf/httpd.conf  # File on the node
+        dest: /home/ec2-user/httpd.conf      # Directory on Ansible master
+        flat: yes  # Prevents Ansible from creating subdirectories
+

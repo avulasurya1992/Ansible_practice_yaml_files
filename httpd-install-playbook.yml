@@ -1,0 +1,22 @@
+#install and run httpd service
+
+---
+
+  - name: installation of httpd and run service
+    hosts: n2
+    become: yes
+
+    tasks:
+      - name: httpd install
+        yum:
+          name: httpd
+          state: present
+
+      - name: httpd service status check and run
+        systemd: 
+          name: httpd
+          state: started	
+
+...
+
+
