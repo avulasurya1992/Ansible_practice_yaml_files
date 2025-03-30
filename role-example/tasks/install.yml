@@ -1,0 +1,19 @@
+---
+
+  - name: httpd install
+    yum:
+      name: httpd
+      state: present
+
+  - name: httpd service status check and run
+    systemd: 
+      name: httpd
+      state: started	
+      enabled: yes
+  
+  - name: install git
+    yum:
+      name: git
+      state: present
+
+...

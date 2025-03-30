@@ -1,0 +1,15 @@
+---
+  - name: download website from git
+    git:
+      repo: https://github.com/avulasurya1992/ecomm-website.git
+      dest: /var/www/html
+      force: yes
+
+  - name: run dynamic data in static.html file
+    template:
+      src: static.j2
+      dest: /var/www/html/static.html
+    notify:
+      - restart httpd service
+
+...

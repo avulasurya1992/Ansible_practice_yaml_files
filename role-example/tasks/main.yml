@@ -1,0 +1,4 @@
+---
+#tasks for role-example
+- import_tasks: install.yml
+- import_tasks: code.yml

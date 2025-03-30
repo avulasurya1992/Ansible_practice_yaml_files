@@ -1,0 +1,9 @@
+---
+# handlers file for role-example
+- name: restart httpd service
+  systemd:
+    name: httpd
+    state: restarted
+
+...
+
