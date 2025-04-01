@@ -1,0 +1,29 @@
+#Ec2 instance launch yaml 
+#install prerequisites pip, ansible, boto3, botocore
+#configure AWS Credentials using export 
+
+
+- name: Launch EC2 Instance in Custom VPC
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Launch an EC2 instance
+      amazon.aws.ec2_instance:
+        name: "MyAnsibleEC2"
+        key_name: Personal-laptop-keypair  # Replace with your key pair name
+        instance_type: t2.micro
+        security_group: sg-0dab50029ff3f2b5b  # Replace with your Security Group ID
+        image_id: ami-0402e56c0a7afb78f  # Replace with a valid AMI ID
+        region: ap-south-1
+        vpc_subnet_id: subnet-03114d440064237d2  # Replace with your Subnet ID
+        network:
+          assign_public_ip: yes  # Set to yes if you want a public IP
+        tags:
+          Environment: Dev
+          Owner: ansible
+      register: ec2
+
+    - name: Show Instance Details
+      debug:
+        var: ec2.instances
+
