@@ -1,5 +1,6 @@
 #Ec2 instance launch and install jenkins. This is the one menthod on installing and executing
 #install prerequisites pip, ansible, boto3, botocore
+#git need to install on server for jenkins jobs which are using git repos
 #configure AWS Credentials using export 
 #using add_host module we dynamically call created new instance and executes tasks
 
@@ -59,6 +60,10 @@
           name: wget
           state: present
 
+      - name: git install
+        yum:
+          name: git
+          state: present
 
       - name: JDK install
         yum:
