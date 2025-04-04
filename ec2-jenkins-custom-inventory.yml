@@ -1,6 +1,7 @@
 #Ec2 instance launch and install jenkins. This is the one menthod on installing and executing
 #install prerequisites pip, ansible, boto3, botocore
 #configure AWS Credentials using export 
+#git needs to install for jenkins jobs which are using git repos
 #custom inventory can help u to run ad-hoc commands on created server
 ####################
 #First play created ec2 inventory data stored in inventory.yml which is a external file. 
@@ -67,6 +68,10 @@
           name: wget
           state: present
 
+      - name: git install
+        yum:
+          name: git
+          state: present
 
       - name: JDK install
         yum:
