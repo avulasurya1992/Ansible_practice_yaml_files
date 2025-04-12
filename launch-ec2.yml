@@ -9,9 +9,9 @@
   tasks:
     - name: Launch an EC2 instance
       amazon.aws.ec2_instance:
-        name: "MyAnsibleEC2"
+        name: "Jenkins-worker-node-1"
         key_name: Personal-laptop-keypair  # Replace with your key pair name
-        instance_type: t2.micro
+        instance_type: t2.medium
         security_group: sg-0dab50029ff3f2b5b  # Replace with your Security Group ID
         image_id: ami-0402e56c0a7afb78f  # Replace with a valid AMI ID
         region: ap-south-1
