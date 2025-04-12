@@ -12,7 +12,7 @@
     tasks:
       - name: Launch an EC2 instance
         amazon.aws.ec2_instance:
-          name: "Sonarqube-server"
+          name: "sonarqube-server-systemd"
           key_name: Personal-laptop-keypair
           instance_type: t2.medium
           security_group: sg-0dab50029ff3f2b5b
@@ -34,7 +34,7 @@
         wait_for:
           host: "{{ ec2.instances[0].public_ip_address }}"
           port: 22
-          delay: 30
+          delay: 120
           timeout: 300
           state: started
   
@@ -44,11 +44,13 @@
           groups: launched_ec2
           ansible_user: ec2-user
           ansible_ssh_private_key_file: /home/ec2-user/Personal-laptop-keypair.pem
-  
+          ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+ 
   # 🚀 Install Sonarqube and Create systemd Service
   - name: Install Sonarqube and run as a systemd service
     hosts: launched_ec2
-    become: yes
+#   become: yes
     tasks:
       - name: Install dependencies
         yum:
@@ -57,30 +59,22 @@
             - unzip
             - java-17-openjdk
           state: present
-  
-      - name: Create directory for Sonarqube
-        file:
-          path: /opt/sonarqube
-          state: directory
-          mode: '0755'
+        become: yes
   
       - name: Download Sonarqube binary zip
         get_url:
           url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.7.96285.zip
-          dest: /opt/sonarqube/sonarqube-9.9.7.96285.zip
+          dest: /home/ec2-user/sonarqube-9.9.7.96285.zip
   
+
       - name: Unzip Sonarqube
         unarchive:
-          src: /opt/sonarqube/sonarqube-9.9.7.96285.zip
-          dest: /opt/sonarqube/
+          src: /home/ec2-user/sonarqube-9.9.7.96285.zip
+          dest: /home/ec2-user/
           remote_src: yes
   
-      - name: Ensure sonar.sh is executable
-        file:
-          path: /opt/sonarqube/sonarqube-9.9.7.96285/bin/linux-x86-64/sonar.sh
-          mode: '0755'
-          state: file
-  
+
+
       - name: Create sonarqube systemd service
         copy:
           dest: /etc/systemd/system/sonarqube.service
@@ -91,27 +85,30 @@
   
             [Service]
             Type=forking
-            ExecStart=/opt/sonarqube/sonarqube-9.9.7.96285/bin/linux-x86-64/sonar.sh start
-            ExecStop=/opt/sonarqube/sonarqube-9.9.7.96285/bin/linux-x86-64/sonar.sh stop
             User=ec2-user
+            Group=ec2-user
+            WorkingDirectory=/home/ec2-user/sonarqube-9.9.7.96285
+            ExecStart=/bin/bash /home/ec2-user/sonarqube-9.9.7.96285/bin/linux-x86-64/sonar.sh start
+            ExecStop=/bin/bash /home/ec2-user/sonarqube-9.9.7.96285/bin/linux-x86-64/sonar.sh stop
             Restart=always
             LimitNOFILE=65536
             LimitNPROC=4096
             
             [Install]
             WantedBy=multi-user.target
-  
+        become: yes     
+
       - name: Reload systemd daemon
         systemd:
           daemon_reload: yes
-  
+        become: yes
+
       - name: Enable and start Sonarqube service
         systemd:
           name: sonarqube
           enabled: yes
           state: started
- 
-
+        become: yes
 ...
 
 
