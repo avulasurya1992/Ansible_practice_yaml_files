@@ -9,7 +9,7 @@
   tasks:
     - name: Launch an EC2 instance
       amazon.aws.ec2_instance:
-        name: "nexus-server"
+        name: "Docker-host"
         key_name: Personal-laptop-keypair  # Replace with your key pair name
         instance_type: t2.medium
         security_group: sg-0dab50029ff3f2b5b  # Replace with your Security Group ID
