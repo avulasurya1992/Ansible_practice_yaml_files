@@ -1,0 +1,49 @@
+---
+- name: Create IAM user and store access keys
+  hosts: localhost
+  connection: local
+
+  collections:
+    - amazon.aws
+
+  vars:
+    iam_user_name: "test-user-2"
+    login_password: "TempSecurePass@123"  # Optional for console login
+    policy_arn: "arn:aws:iam::aws:policy/AdministratorAccess"
+    credentials_file: "/home/ec2-user/aws_credentials.yml"
+
+  tasks:
+    - name: Create IAM user with login password
+      amazon.aws.iam_user:
+        name: "{{ iam_user_name }}"
+        password: "{{ login_password }}"
+        state: present
+
+    - name: Attach AdministratorAccess policy to IAM user
+      amazon.aws.iam_user:
+        name: "{{ iam_user_name }}"
+        managed_policies:
+          - "{{ policy_arn }}"
+        state: present
+
+    - name: Create access keys for IAM user
+      amazon.aws.iam_access_key:
+        user_name: "{{ iam_user_name }}"
+        state: present
+      register: access_key
+
+
+    - name: Show access key and secret
+      debug:
+        msg:
+          - "Access Key: {{ access_key.access_key_id }}"
+          - "Secret Key: {{ access_key.secret_access_key }}"
+
+
+    - name: Store access keys in a file
+      copy:
+        content: |
+          aws_access_key_id: {{ access_key.access_key_id }}
+          aws_secret_access_key: {{ access_key.secret_access_key }}
+        dest: "{{ credentials_file }}"
+        mode: '0600'
