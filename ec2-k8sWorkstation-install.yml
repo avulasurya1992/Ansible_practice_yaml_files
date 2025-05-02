@@ -1,4 +1,4 @@
-#Ec2 instance launch and install kubernetes required applications (aws cli,kubectl and kops).
+#this playbook goal is Ec2 instance launch and install kubernetes required applications (aws cli,kubectl and kops).
 #install prerequisites pip, ansible, boto3, botocore
 #configure AWS Credentials using export 
 #using add_host module we dynamically call created new instance and executes tasks
